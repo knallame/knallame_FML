@@ -1,0 +1,138 @@
+---
+title: "BA_ASSIGNMENT-3"
+author: "Keerthi Priya Nallamekala"
+date: "2023-11-05"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(mlbench)
+library(tinytex)
+```
+
+#1)Create two variables X and Y
+
+```{r}
+set.seed(2017)
+X=runif(100)*10
+Y=X*4+3.45
+Y=rnorm(100)*0.29*Y+Y
+```
+
+#1a)Plot Y against X
+
+```{r}
+plot(Y~X)
+```
+
+#Based on the plot do you think we can fit a linear model to explain Y based on X?
+
+#From the above plot, we can observe that the relationship between X and Y is a linear regression. As we can see whenever X increases, Y also increases which shows that X and Y variables have a positive relationship.
+
+
+#1b)Construct a simple linear model of Y based on X
+```{r}
+
+Linear_Model=lm(Y ~X)
+summary(Linear_Model)
+```
+#What is the accuracy of this model?
+
+#According to summary, accuracy of model can be derived from R-squared value. R-squared value of above summary is 0.6517. Hence, the accuracy of model is 65.17%.
+
+#Write the equation that explains Y based on X?
+
+#Y=3.6108*X+4.4655
+
+
+#1c)How the Coefficient of Determination, R2, of the model above is related to the correlation coefficient of X and Y?
+```{r}
+cor(X,Y)^2
+```
+
+#2)Using mtcars dataset
+```{r}
+head(mtcars)
+```
+#2a) Building a model based on James assumption
+```{r}
+James_Model <- lm(hp~wt, data = mtcars)
+summary(James_Model)
+```
+
+#Building a model based on Chris assumption
+```{r}
+Chris_Model <- lm(hp~mpg, data = mtcars)
+summary(Chris_Model)
+```
+
+#Is james assumption better or chris is better?
+
+#From above, we can observe that according to James assumption the model shows accuracy of 43.39% and according to Chris assumption the model shows accuracy of 60.24%. So, we can conclude that Chris assumption of comparing Horse power to mpg is better when compared to James assumption.
+
+
+#2b) what is the estimated Horse Power of a car with 4 cyl and mpg of 22?
+```{r}
+Calc_Model <- lm(hp~mpg+cyl, data = mtcars)
+summary(Calc_Model)
+
+Predict_Model <- predict(Calc_Model, data.frame(cyl=c(4), mpg=c(22)))
+Predict_Model
+```
+#The estimated Horse power of a car for 4 cyl and 22 mpg is 88.93618.
+
+#3)Viewing data from mlbench library
+```{r}
+data(BostonHousing)
+str(BostonHousing)
+```
+
+#3a) Build a model to estimate the median value of owner-occupied homes (medv) based on the following variables: crime crate (crim), proportion of residential land zoned for lots over 25,000 sq.ft (zn), the local pupil-teacher ratio (ptratio) and weather the whether the tract bounds Chas River(chas). 
+
+```{r}
+Boston_Model<- lm(medv~crim+zn+ptratio+chas, data = BostonHousing)
+summary(Boston_Model)
+```
+#Is this an accurate model? - Based on R-squared which is 0.3599 i.e., The accuracy of model is 35%. The model is not accurate enough.
+
+
+#3b(i)) Imagine two houses that are identical in all aspects but one bounds the Chas Riverand the other does not. Which one is more expensive and by how much?
+
+#Factors of Chas is in factors of 1 and 0. Identical houses is 1 and who dont have identical houses have 0. And Estimate Std. of chas1 in relation to medv is 4.58393.
+
+#Medv = 49.91868 + (-0.26018) + 0.07073 + (-1.49367) + 4.58393(1) =   52.81949.
+
+#Medv = 49.91868 + (-0.26018) + 0.07073 + (-1.49367) + 4.58393(0) =  48.23556.
+
+#Comparing from above, Identical houses for chas River for which factor is 1, the value as per estimated std 52.81949. When factor is 0, the value as per estimated std. is 48.23556. By comparison of factors 1 and 0, chas River is expensive by 4.58393  for factor 1 in $1000.
+
+
+#3b(ii)) Imagine two houses that are identical in all aspects but in the neighborhood of one of them the pupil-teacher ratio is 15 and in the other one is 18. Which one is more expensive and by how much?
+
+#Medv = 49.91868 + (-0.26018) + 0.07073 + (-1.49367)(15) + 4.58393= 31.9081.
+
+#Medv = 49.91868 + (-0.26018) + 0.07073 + (-1.49367)(18) + 4.58393= 27.4271.
+
+#Difference between Pupil-teacher ratio for 15 and 18 is 4.48101. Hence, Pupil-teacher ratio for 15 is expensive by 4.48101 when compared to pupil-teacher ratio of 18.
+
+#3c)Which of the variables are statistically important?
+
+#when comparing dependent and independent variables to show statistical importance, we would like to see p values being as small as possible.From above, p values of crim, zn, ptratio,chas when compared to medv are lowest. We can conclude that all the values are statistically significant.
+
+
+#3.d)Anova analysis and determine the order of importance of these four variables.?
+
+```{r}
+anova_Model <- anova(Boston_Model)
+anova_Model
+```
+
+#In Annova analysis, the importance of variables is defined by the sum squared values. From above the values of sum squared, in order of importance are as follows: crim,zn,ptratio,chas.
